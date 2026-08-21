@@ -21,9 +21,9 @@ Run as root:
     fetch -o /tmp/usque-repo.pub \
       https://vampywiz17.github.io/os-usque-repo/bootstrap/usque-repo.pub
 
-    test "$(sha256 -q /tmp/usque-repo.pub)" = \
-      "4b2380b1f601011f8d31fc0c97e5a0b7d4d3f77964e14d3f84d6e044b120e404" \
-      || { echo "Unexpected repository public-key fingerprint" >&2; exit 1; }
+    /bin/sh -c 'test "$(sha256 -q /tmp/usque-repo.pub)" = "4b2380b1f601011f8d31fc0c97e5a0b7d4d3f77964e14d3f84d6e044b120e404" || { echo "Unexpected repository public-key fingerprint" >&2; exit 1; }'
+
+The explicit /bin/sh wrapper makes verification safe to paste into the default OPNsense root tcsh shell.
 
     install -d -m 0755 /usr/local/etc/pkg/keys
     install -m 0644 /tmp/usque-repo.pub \
