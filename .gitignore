@@ -1,0 +1,4 @@
+.staging/
+*.key
+*.tmp
+.DS_Store
