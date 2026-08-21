@@ -21,17 +21,19 @@ Run as root:
     fetch -o /tmp/usque-repo.pub \
       https://vampywiz17.github.io/os-usque-repo/bootstrap/usque-repo.pub
 
-    /bin/sh -c 'test "$(sha256 -q /tmp/usque-repo.pub)" = "4b2380b1f601011f8d31fc0c97e5a0b7d4d3f77964e14d3f84d6e044b120e404" || { echo "Unexpected repository public-key fingerprint" >&2; exit 1; }'
+    /bin/sh -c 'test "$(sha256 -q /tmp/usque-repo.pub)" = "c2eee90cd3344ceac8c83506cc6077cc2bf4826df58239653cc0538ebe1292d8" || { echo "Unexpected repository public-key fingerprint" >&2; exit 1; }'
 
 The explicit /bin/sh wrapper makes verification safe to paste into the default OPNsense root tcsh shell.
 
-    install -d -m 0755 /usr/local/etc/pkg/keys
-    install -m 0644 /tmp/usque-repo.pub \
-      /usr/local/etc/pkg/keys/usque-repo.pub
+    install -d -m 0755 /usr/local/etc/pkg/fingerprints/Usque/trusted
+    install -d -m 0755 /usr/local/etc/pkg/fingerprints/Usque/revoked
+    fetch -o /usr/local/etc/pkg/fingerprints/Usque/trusted/usque \
+      https://vampywiz17.github.io/os-usque-repo/bootstrap/fingerprints/trusted/usque
 
     fetch -o /usr/local/etc/pkg/repos/Usque.conf \
       https://vampywiz17.github.io/os-usque-repo/bootstrap/26.7/Usque.conf
 
+    rm -f /var/db/pkg/repo-Usque.sqlite
     pkg update -f
     pkg install os-usque
 
@@ -45,14 +47,17 @@ The plugin declares its runtime dependency, so pkg installs or updates both pack
 ## Remove the repository
 
     rm /usr/local/etc/pkg/repos/Usque.conf
-    rm /usr/local/etc/pkg/keys/usque-repo.pub
+    rm /usr/local/etc/pkg/fingerprints/Usque/trusted/usque
+    rmdir /usr/local/etc/pkg/fingerprints/Usque/revoked \
+      /usr/local/etc/pkg/fingerprints/Usque/trusted \
+      /usr/local/etc/pkg/fingerprints/Usque
     pkg update -f
 
 Removing the repository configuration does not uninstall already installed packages.
 
 ## Publishing
 
-Publishing runs on a trusted FreeBSD 15 builder. The private EdDSA key must stay outside this Git repository and must have mode 0400.
+Publishing runs on a trusted FreeBSD 15 builder. The private RSA-4096 key must stay outside this Git repository and must have mode 0400.
 
     USQUE_REPO_SIGNING_KEY=/secure/path/repo.key \
       ./scripts/publish-release.sh 26.7 v0.2.21
