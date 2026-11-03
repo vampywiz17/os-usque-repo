@@ -10,8 +10,8 @@ if [ "$push" -eq 1 ]; then
 fi
 case "$release" in
   26.7)
-    pkg_url="https://pkg.opnsense.org/FreeBSD:15:amd64/26.7/latest/All/pkg-2.3.1_1.pkg"
-    pkg_sha256="cac4fba478adbaffdcccb3c3ef80899c85d88ca45b3bf6b47b5b54e064512d94"
+    pkg_url="https://pkg.opnsense.org/FreeBSD:15:amd64/26.7/MINT/26.7/latest/All/pkg-2.3.1_1.pkg"
+    pkg_sha256="b1e197487b950d9650c2bdc2373b5411043591f3ba4ae4ca1fdb6359758d6ed6"
     ;;
   *) echo "no pinned OPNsense pkg tool for release $release" >&2; exit 65;;
 esac
